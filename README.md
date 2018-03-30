@@ -124,7 +124,6 @@ I implemented this in cell of "./p4.ipynb" through function `pipeline6()`.  Here
 #### 1. Perform pipeling on video.
 
 Here's a [link to my video result](./output_images/project_out.mp4)
-![alt text][video1]
 
 ---
 
