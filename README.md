@@ -15,13 +15,13 @@ The goals / steps of this project are the following:
 [//]: # (Image References)
 
 [image1]: ./output_images/p4_1.png "Undistorted"
-[image2]: ./output_images/test4.jpg "Road Transformed"
+[image2]: ./output_images/distort.jpg "Road Transformed"
 [image3]: ./output_images/threshold.jpg "Color and gradient Example"
 [image4]: ./output_images/perspective.jpg "Perspective Example"
-[image5]: ./output_images/poly.jpg "Fit Visual"
-[image6]: ./output_images/radius.jpg "Radius and car position"
-[image6]: ./examples/example_output.jpg "Output"
-[video1]: ./project_video.mp4 "Video"
+[image5]: ./output_images/poly.jpg "Sliding window Visual"
+[image6]: ./output_images/skip_poly.jpg "Fit poly Visual"
+[image7]: ./output_images/sliding.jpg "Radius and car position"
+[video1]: ./output_images/project_video.mp4 "Video"
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/571/view) Points
 
@@ -68,26 +68,29 @@ The code for my perspective transform includes a function called `perspective_tr
 The `perspective_transform()` function takes as inputs an image.  I chose the hardcode the source and destination points in the following manner:
 
 ```python
+xff1 = 60
+xff2 = 60
+yff = 95
 src = np.float32(
-    [[(img_size[0] / 2) - 55, img_size[1] / 2 + 100],
-    [((img_size[0] / 6) - 10), img_size[1]],
-    [(img_size[0] * 5 / 6) + 60, img_size[1]],
-    [(img_size[0] / 2 + 55), img_size[1] / 2 + 100]])
+         [[(img_size[0] / 2) - xff1, img_size[1] / 2 + yff],
+         [((img_size[0] / 6) - xff2), img_size[1]],
+         [(img_size[0] * 5 / 6) + xff2, img_size[1]],
+         [(img_size[0] / 2 + xff1), img_size[1] / 2 + yff]])
 dst = np.float32(
-    [[(img_size[0] / 4), 0],
-    [(img_size[0] / 4), img_size[1]],
-    [(img_size[0] * 3 / 4), img_size[1]],
-    [(img_size[0] * 3 / 4), 0]])
+         [[(img_size[0] / 4), 0],
+         [(img_size[0] / 4), img_size[1]],
+         [(img_size[0] * 3 / 4), img_size[1]],
+         [(img_size[0] * 3 / 4), 0]])
 ```
 
 This resulted in the following source and destination points:
 
 | Source        | Destination   | 
 |:-------------:|:-------------:| 
-| 585, 460      | 320, 0        | 
-| 203, 720      | 320, 720      |
+| 580, 455      | 320, 0        | 
+| 153, 720      | 320, 720      |
 | 1127, 720     | 960, 720      |
-| 695, 460      | 960, 0        |
+| 600, 455      | 960, 0        |
 
 I verified that my perspective transform was working as expected by drawing the `src` and `dst` points onto a test image and its warped counterpart to verify that the lines appear parallel in the warped image.
 
@@ -95,21 +98,24 @@ I verified that my perspective transform was working as expected by drawing the 
 
 #### 4. Lane-line pixels and fit their positions with a polynomial:
 
-Then I did some other stuff and fit my lane lines with a 2nd order polynomial kinda like this.
-The code for my experminets added through function called `fit_lines()`, 
-The `fit_lines()` function takes as inputs an binary warped image.  Details of it documented as code comments in cell "./p4.ipynb"
+Then I did some other stuff and fit my lane lines with a 2nd order polynomial kinda like this using sliding window.
 
 ![alt text][image5]
 
+..also did skip sliding window for next frame, displayed visible:
+
+![alt text][image6]
+
 #### 5. Calculate the radius of curvature of the lane and the position of the vehicle with respect to center.
 
-I did this in lines within `fit_lines()` function and updated in output image through `process_img()`.
+Through `common_draw()` updated calcualted curvature of line and position of vehicle. This function
+can take input from both slinding window and skip sliding window.
 
 #### 6. Plot back down onto the road such that the lane area is identified clearly:
 
-I implemented this in cell of "./p4.ipynb" through function `drawing()`.  Here is an example of my result on a test image:
+I implemented this in cell of "./p4.ipynb" through function `pipeline6()`.  Here is an example of my result on a test image:
 
-![alt text][image6]
+![alt text][image7]
 
 ---
 
@@ -118,6 +124,7 @@ I implemented this in cell of "./p4.ipynb" through function `drawing()`.  Here i
 #### 1. Perform pipeling on video.
 
 Here's a [link to my video result](./output_images/project_out.mp4)
+![alt text][video1]
 
 ---
 
@@ -125,4 +132,5 @@ Here's a [link to my video result](./output_images/project_out.mp4)
 
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
-Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
+There is one fram glitch observed in shadow and where there is no lane marking near car position. However, that get immediately
+adjusted next frame.  
