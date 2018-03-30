@@ -132,5 +132,12 @@ Here's a [link to my video result](./output_images/project_out.mp4)
 
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
-There is one fram glitch observed in shadow and where there is no lane marking near car position. However, that get immediately
+
+1. There is one fram glitch observed in shadow and where there is no lane marking near car position. However, that get immediately
 adjusted next frame.  
+
+2. I could have added lines in perspective transorm and curve poly draw for better visualation, avoided to make code and wrapper simplified.
+
+3. Source and Destination points in perspective transform are hardcoded for project video, it needs to make runtime based on image/curve.
+   that should help for lane finding of advanced videos.
+
